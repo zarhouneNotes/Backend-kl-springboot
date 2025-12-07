@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping ("/api/students")
 
@@ -40,6 +40,7 @@ public class StudentController {
         return new ResponseEntity<>("Student added successfully" , HttpStatus.CREATED  ) ;
     }
 
+   
 
 
     @DeleteMapping("/{id}")
@@ -51,14 +52,7 @@ public class StudentController {
     @PutMapping("/{id}")
     public ResponseEntity<String> updateStudent (@PathVariable Long id , @RequestBody StudentFullDTO studentFullDTO){
 
-        if (!studentService.existsById(id)){
-            return new ResponseEntity<>("Student does not exist" , HttpStatus.NOT_FOUND) ;
-        }
-
-
-
-
-
+        studentService.updateStudent(id, studentFullDTO);
 
         return new ResponseEntity<>("Student updated ;)" , HttpStatus.OK) ;
 

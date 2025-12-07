@@ -4,8 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+
 
 
 @Entity
@@ -18,14 +17,14 @@ public class Student extends Person  {
     private LocalDate birthDate ;
     private String season ;
     @Lob
-    private byte[] photo ;
+    private String photo ;
 
     @ManyToOne
-    @JoinColumn
+    @JoinColumn(nullable= false)
     private Parent father ;
 
     @ManyToOne ()
-    @JoinColumn
+    @JoinColumn(nullable= false)
     private Parent mother ;
 
 
@@ -51,7 +50,7 @@ public class Student extends Person  {
          return mother ;
     }
 
-    public byte[] getPhoto() {
+    public String getPhoto() {
         return photo;
     }
 
@@ -83,7 +82,7 @@ public class Student extends Person  {
         }
     }
 
-    public void setPhoto(byte[] photo) {
+    public void setPhoto(  String photo) {
         this.photo = photo;
     }
 }

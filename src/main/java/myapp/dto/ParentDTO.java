@@ -7,7 +7,7 @@ public class ParentDTO {
     private String gender ;
     private String cin ;
     private String phone ;
-    private byte[] identity ;
+    private String identity ;
 
     public Long getId() {
         return id;
@@ -57,11 +57,11 @@ public class ParentDTO {
         this.phone = phone;
     }
 
-    public byte[] getIdentity() {
+    public String getIdentity() {
         return identity;
     }
 
-    public void setIdentity(byte[] identity) {
+    public void setIdentity(String identity) {
         this.identity = identity;
     }
 }

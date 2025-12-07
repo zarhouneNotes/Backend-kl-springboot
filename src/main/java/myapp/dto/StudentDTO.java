@@ -7,9 +7,7 @@ public class StudentDTO {
     private String birthdate ;
     private String gender ;
     private String section ;
-    private String father_id ;
-    private String mother_id ;
-    private byte[] photo ;
+    private String photo ;
 
 
     // getters
@@ -40,7 +38,7 @@ public class StudentDTO {
     }
 
 
-    public byte[] getPhoto() {
+    public String getPhoto() {
         return photo;}
 
 
@@ -72,7 +70,7 @@ public class StudentDTO {
     }
 
 
-    public void setPhoto(byte[] photo){
+    public void setPhoto(String photo){
         this.photo = photo ;
     }
 

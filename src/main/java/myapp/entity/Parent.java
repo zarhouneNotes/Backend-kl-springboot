@@ -8,7 +8,7 @@ public class Parent extends Person{
     private String cin ;
     private String phone ;
     @Lob
-    private byte[] identity ;
+    private String identity ;
 
     // getters
 
@@ -16,7 +16,7 @@ public class Parent extends Person{
     public String getPhone() {
         return phone;
     }
-    public  byte[] getIdentity() {
+    public  String getIdentity() {
         return identity ;
     }
 
@@ -35,7 +35,7 @@ public class Parent extends Person{
         this.phone = phone;
     }
 
-    public void setIdentity(byte[] identity) {
+    public void setIdentity(String identity) {
         this.identity = identity;
     }
 }

@@ -1,5 +1,6 @@
 package myapp.entity;
 
+import io.micrometer.common.lang.NonNull;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
@@ -7,6 +8,8 @@ import jakarta.validation.constraints.NotBlank;
 public abstract class Person {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @NonNull
+    // @NotBlank
     private Long id ;
     private String firstname ;
     private String lastname ;

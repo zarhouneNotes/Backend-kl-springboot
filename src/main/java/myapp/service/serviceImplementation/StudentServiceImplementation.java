@@ -1,22 +1,32 @@
 package myapp.service.serviceImplementation;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import myapp.dto.StudentFullDTO;
 import myapp.dto.ParentDTO;
 import myapp.dto.StudentDTO;
 import myapp.entity.Parent;
-import myapp.entity.Person;
 import myapp.entity.Student;
 import myapp.exeption.BadRequestExeption;
 import myapp.repository.ParentRep;
 import myapp.repository.StudentRep;
 import myapp.service.StudentService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
+
+import org.apache.coyote.BadRequestException;
+import org.springframework.web.multipart.MultipartFile;
+
 
 
 @Service
@@ -59,11 +69,12 @@ public class StudentServiceImplementation implements StudentService {
 
 
 
-            if (st.getFather().getId() == null || st.getMother().getId() == null)
+            if (st.getFather().getId() == null || st.getMother().getId() == null){
                 throw  new BadRequestExeption("Parent not found or invalid id") ;
-
-            Parent father = parentRep.findById(st.getFather().getId()).orElse(null);
-            Parent mother = parentRep.findById(st.getMother().getId()).orElse(null) ;
+            }
+            
+            Parent father =    parentRep.findById(st.getFather().getId()).orElseThrow(()-> new BadRequestException("Bad request : Parent not foud/ Invalid id"));
+            Parent mother = parentRep.findById(st.getMother().getId()).orElseThrow(()-> new BadRequestException("Bad request : Parent not foud/ Invalid id")) ;
 
             return toStudentFullDTO(st,father,mother) ;
 
@@ -72,6 +83,10 @@ public class StudentServiceImplementation implements StudentService {
             throw new BadRequestExeption("Something went wrong") ;
         }
     }
+    
+
+    //////// create student
+
     @Override
     public void createStudent(StudentFullDTO studentFullDTO){
         if (studentFullDTO == null ||
@@ -81,6 +96,8 @@ public class StudentServiceImplementation implements StudentService {
         ){
             throw new BadRequestExeption("Bad request : missing data");
         }
+
+        
         Student student = toStudentEntity(studentFullDTO.getStudent()) ;
         Parent father = toParentEntity(studentFullDTO.getFather()) ;
         Parent mother = toParentEntity(studentFullDTO.getMother()) ;
@@ -121,22 +138,38 @@ public class StudentServiceImplementation implements StudentService {
     @Override
     public void updateStudent(Long id , StudentFullDTO newStudentVersioDTO){
 
-        if (newStudentVersioDTO == null) throw new BadRequestExeption("Bad request : missing data");
+        if (newStudentVersioDTO == null ||id == null) throw new BadRequestExeption("Bad request : missing data");
 
         try{
-            Student student = toStudentEntity(newStudentVersioDTO.getStudent()) ;
-            Parent father = toParentEntity(newStudentVersioDTO.getFather()) ;
-            Parent mother = toParentEntity(newStudentVersioDTO.getMother()) ;
-            father = parentRep.save(father) ;
-            mother =  parentRep.save(mother) ;
+            // Existing Data
+            Student oldStudent = studentRepo.findById(id).orElseThrow(()->new BadRequestExeption("Student not found or invalid id")) ;
+            Parent oldFather = oldStudent.getFather() ;
+            Parent oldMother = oldStudent.getMother() ;
+            // new data
+            Student newStudent = toStudentEntity(newStudentVersioDTO.getStudent()) ;
+            Parent newFather = toParentEntity(newStudentVersioDTO.getFather()) ;
+            Parent newMother = toParentEntity(newStudentVersioDTO.getMother()) ;
+            //update parents
+
+            updateParentEntity(newFather, oldFather) ;
+            updateParentEntity(newMother, oldMother) ;
+
+            parentRep.save(oldFather);
+            parentRep.save(oldMother) ;
+          
+            // update students
+            oldStudent.setFather(oldFather);
+            oldStudent.setMother(oldMother);
+            updateStudentEntity(newStudent, oldStudent);
+            
+            studentRepo.save(oldStudent) ;
+        
 
 
-            student.setFather(father);
-            student.setMother(mother);
 
-            studentRepo.save(student) ;
         }catch (Exception e){
-            throw new BadRequestExeption("Bad request : Failed to save data!") ;
+            e.printStackTrace();
+            throw new BadRequestExeption("Bad request : Failed to update data!" + e.getCause()) ;
         }
 
 
@@ -146,6 +179,31 @@ public class StudentServiceImplementation implements StudentService {
     @Override
     public boolean existsById(Long id){
         return studentRepo.existsById(id) ;
+    }
+
+
+    // save files
+    @Override
+    public String saveFile (MultipartFile myFile ) throws IOException { 
+
+            String uploadsDir = "uploads/students";
+            Path dirPath = Paths.get(uploadsDir) ;
+            Files.createDirectories(dirPath)  ;
+            // get ext
+            String fn = myFile.getOriginalFilename() ;
+            String Ext = "" ;
+            if (myFile != null && fn.contains(".")) {
+                Ext = fn.substring(fn.lastIndexOf(".")) ;
+                
+            }
+
+
+            String filename = "student_"+UUID.randomUUID()+Ext ;
+            Path filePath = dirPath.resolve(filename) ;
+            Files.write(filePath, myFile.getBytes()) ;
+            return "/uploads/students/"+ filename ;
+        
+       
     }
 
 
@@ -222,6 +280,34 @@ public class StudentServiceImplementation implements StudentService {
     }
 
 
+
+    // update student entity
+    @Override
+    public void  updateStudentEntity (Student newStudent , Student exiStudent){
+        exiStudent.setFirstname(newStudent.getFirstname());
+        exiStudent.setLastname(newStudent.getLastname());
+        exiStudent.setBirthDate(newStudent.getBirthDate());
+        exiStudent.setGender(newStudent.getGender());
+        exiStudent.setSection(newStudent.getSection());
+        if(newStudent.getPhoto() != null)
+            exiStudent.setPhoto(newStudent.getPhoto());
+             
+        // return exiStudent ;
+    }
+
+    @Override
+    public void updateParentEntity (Parent newParent , Parent exiParent){
+        exiParent.setFirstname(newParent.getFirstname());
+        exiParent.setLastname(newParent.getLastname());
+        exiParent.setGender(newParent.getGender());
+        exiParent.setCin(newParent.getCin());
+        exiParent.setPhone(newParent.getPhone());
+        if(newParent.getIdentity() != null)
+            exiParent.setIdentity(newParent.getIdentity());
+        
+
+        // return exiParent ;
+    }
 
 
 

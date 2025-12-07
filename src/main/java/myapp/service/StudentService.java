@@ -2,9 +2,13 @@ package myapp.service;
 
 import myapp.dto.StudentFullDTO;
 import myapp.dto.StudentDTO;
+import myapp.entity.Parent;
 import myapp.entity.Student;
 
+import java.io.IOException;
 import java.util.List;
+
+import org.springframework.web.multipart.MultipartFile;
 
 
 public interface StudentService {
@@ -15,6 +19,9 @@ public interface StudentService {
     void createStudent(StudentFullDTO studentFullDTO) ; ;
     void deleteStudent(Long id) ;
     void updateStudent( Long id , StudentFullDTO newStudent) ;
+    void  updateStudentEntity (Student a , Student b) ;
+    void  updateParentEntity (Parent newParent , Parent exiParent) ;
+    String saveFile(MultipartFile file ) throws IOException ;
     boolean existsById (Long id) ;
 
 
