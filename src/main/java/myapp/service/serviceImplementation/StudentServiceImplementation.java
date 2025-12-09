@@ -1,9 +1,6 @@
 package myapp.service.serviceImplementation;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+
 
 import myapp.dto.StudentFullDTO;
 import myapp.dto.ParentDTO;
@@ -21,11 +18,9 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.apache.coyote.BadRequestException;
-import org.springframework.web.multipart.MultipartFile;
 
 
 
@@ -183,29 +178,7 @@ public class StudentServiceImplementation implements StudentService {
 
 
     // save files
-    @Override
-    public String saveFile (MultipartFile myFile ) throws IOException { 
-
-            String uploadsDir = "uploads/students";
-            Path dirPath = Paths.get(uploadsDir) ;
-            Files.createDirectories(dirPath)  ;
-            // get ext
-            String fn = myFile.getOriginalFilename() ;
-            String Ext = "" ;
-            if (myFile != null && fn.contains(".")) {
-                Ext = fn.substring(fn.lastIndexOf(".")) ;
-                
-            }
-
-
-            String filename = "student_"+UUID.randomUUID()+Ext ;
-            Path filePath = dirPath.resolve(filename) ;
-            Files.write(filePath, myFile.getBytes()) ;
-            return "/uploads/students/"+ filename ;
-        
-       
-    }
-
+   
 
     // convert    ENTITY --->> DTO
 

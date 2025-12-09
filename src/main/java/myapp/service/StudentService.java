@@ -21,7 +21,7 @@ public interface StudentService {
     void updateStudent( Long id , StudentFullDTO newStudent) ;
     void  updateStudentEntity (Student a , Student b) ;
     void  updateParentEntity (Parent newParent , Parent exiParent) ;
-    String saveFile(MultipartFile file ) throws IOException ;
+    // String saveFile(MultipartFile file , String path ) throws IOException ;
     boolean existsById (Long id) ;
 
 

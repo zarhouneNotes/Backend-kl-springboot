@@ -10,12 +10,12 @@ import java.time.LocalDate;
 @Entity
 public class Teacher extends Person{
     private String cin ;
-    private Integer phone ;
+    private String phone ;
     @Lob
-    private byte[] identity ;
-    @JsonFormat(pattern = "dd-mm-yyyy")
+    private String identity ;
+    @JsonFormat(pattern = "dd-MM-yyyy")
     private LocalDate hiredate ;
-    @JsonFormat(pattern = "dd-mm-yyyy")
+    @JsonFormat(pattern = "dd-MM-yyyy")
     private LocalDate endDate ;
 
     public String getCin() {
@@ -26,19 +26,19 @@ public class Teacher extends Person{
         this.cin = cin;
     }
 
-    public Integer getPhone() {
+    public String getPhone() {
         return phone;
     }
 
-    public void setPhone(Integer phone) {
+    public void setPhone(String phone) {
         this.phone = phone;
     }
 
-    public byte[] getIdentity() {
+    public String getIdentity() {
         return identity;
     }
 
-    public void setIdentity(byte[] identity) {
+    public void setIdentity(String identity) {
         this.identity = identity;
     }
 
