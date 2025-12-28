@@ -1,14 +1,11 @@
 package myapp.service;
 
-import myapp.dto.StudentFullDTO;
-import myapp.dto.StudentDTO;
-import myapp.entity.Parent;
-import myapp.entity.Student;
-
-import java.io.IOException;
 import java.util.List;
 
-import org.springframework.web.multipart.MultipartFile;
+import myapp.dto.StudentDTO;
+import myapp.dto.StudentFullDTO;
+import myapp.entity.Parent;
+import myapp.entity.Student;
 
 
 public interface StudentService {

@@ -3,10 +3,8 @@ package myapp.entity;
 
 import jakarta.persistence.*;
 
-import java.util.UUID;
-
 @Entity
-public class MediaFile {
+public class MedicalFile {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,10 +15,14 @@ public class MediaFile {
     private Student student ;
 
     @Lob
-    private byte[] paper ;
+    private String paper ;
     private String paperType;
 
     //getters
+
+    public String getPaper (){
+        return this.paper ;
+    }
 
 
     public Long getId() {
@@ -37,7 +39,9 @@ public class MediaFile {
 
 
     // setters
-
+    public void setId(Long id){
+        this.id = id ;
+    }
 
     public void setPaperType (String paperType){
         this.paperType = paperType ;
@@ -45,5 +49,9 @@ public class MediaFile {
 
     public void setStudent(Student student) {
         this.student = student;
+    }
+
+    public void setPaper(String paper) {
+        this.paper = paper;
     }
 }
