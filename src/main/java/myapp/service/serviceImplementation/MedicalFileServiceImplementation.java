@@ -1,11 +1,15 @@
 package myapp.service.serviceImplementation;
 
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import myapp.dto.MedicalFileDTO;
 import myapp.entity.MedicalFile;
+import myapp.entity.Student;
 import myapp.exeption.BadRequestExeption;
 import myapp.repository.MedicalFileRep;
 import myapp.repository.StudentRep;
@@ -20,22 +24,33 @@ public class MedicalFileServiceImplementation implements MedicalFileService{
 
 
     @Override
-    public void createMedicalPaper (MedicalFileDTO MFDTO){
-        if(MFDTO == null ) throw new BadRequestExeption("MISSING_DATA") ; 
-        try {
+    public void createMedicalPaper(MedicalFileDTO MFDTO , Long id) {
+    
+        if (MFDTO == null) {
+            throw new BadRequestExeption("MISSING_DATA");
+        }
+        
+        Student student = studentRep.findById(id).orElseThrow(()-> new BadRequestExeption("STUDENT NOT FOUND OR INVALID ID ") ) ;
+        MedicalFile mf = toMedicalEntity(MFDTO) ; 
+        mf.setStudent(student);
+        medicalFileRep.save(mf) ;
 
-            // Student st = studentRep.findById(MFDTO.getStudent_id()).orElseThrow(()-> new BadRequestExeption("Student not found / invalid id")) ;
-            MedicalFile mf = toMedicalEntity(MFDTO);
-            // mf.setStudent(st);
-            medicalFileRep.save(mf) ;
-            
-        } catch (Exception e) {
-            e.printStackTrace() ;
-            throw new BadRequestExeption("Failed to fatch "+e.getCause() ) ;
+    
+    }
+
+
+    @Override
+    public List<MedicalFileDTO> getAllMedicalFilesById(Long StudentId)  {
+
+        try {
+            List <MedicalFile> med_Files = medicalFileRep.findAll() ;
+            return med_Files.stream().map(this::toMedicalDTO).collect(Collectors.toList()) ;
+        } catch (Exception e){
+            throw new BadRequestExeption("Something went wrong");
         }
 
-
     }
+    
 
     // @Override 
     // public void updateMedicalFile(Long id , MedicalFileDTO NewMFDTO){
@@ -56,8 +71,23 @@ public class MedicalFileServiceImplementation implements MedicalFileService{
         MedicalFile mf = new MedicalFile() ;
         mf.setPaper(medicalFileDTO.getPaper());
         mf.setPaperType(medicalFileDTO.getPaperType()) ;
+       
+        
         return mf ;
     }
+
+
+    public MedicalFileDTO toMedicalDTO(MedicalFile md_entity){
+        MedicalFileDTO mf = new MedicalFileDTO() ;
+        mf.setPaper(md_entity.getPaper());
+        mf.setPaperType(md_entity.getPaperType());
+        mf.setId(md_entity.getId().toString());
+        
+        return mf ;
+    }
+
+
+
 
 
 

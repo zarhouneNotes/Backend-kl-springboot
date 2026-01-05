@@ -4,7 +4,7 @@ public class MedicalFileDTO {
     private String id ;
     private String paper ;
     private String paperType ;
-    private Long student_id ;
+    // private Long student_id ;
 
     
 
@@ -33,12 +33,12 @@ public class MedicalFileDTO {
         this.paperType = paperType;
     }
 
-    public Long getStudent_id() {
-        return student_id;
-    }
+    // public Long getStudent_id() {
+    //     return student_id;
+    // }
 
-    public void setStudent_id(Long student_id) {
-        this.student_id = student_id;
-    }
+    // public void setStudent_id(Long student_id) {
+    //     this.student_id = student_id;
+    // }
 
 }
