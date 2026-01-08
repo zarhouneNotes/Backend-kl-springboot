@@ -1,7 +1,13 @@
 package myapp.entity;
 
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
+import jakarta.persistence.ManyToOne;
 
 @Entity
 public class MedicalFile {
@@ -11,7 +17,7 @@ public class MedicalFile {
     private Long id;
 
     @ManyToOne
-    @JoinColumn
+    @JoinColumn(name = "student_id")
     private Student student ;
 
     @Lob

@@ -40,27 +40,86 @@ public class MedicalFileServiceImplementation implements MedicalFileService{
 
 
     @Override
-    public List<MedicalFileDTO> getAllMedicalFilesById(Long StudentId)  {
+    public List<MedicalFileDTO> getAllMedicalFilesById(Long id)  {
 
         try {
-            List <MedicalFile> med_Files = medicalFileRep.findAll() ;
-            return med_Files.stream().map(this::toMedicalDTO).collect(Collectors.toList()) ;
+            // List<MedicalFile> med_Files = ;
+            return medicalFileRep.findByStudentId(id).stream().map(this::toMedicalDTO).collect(Collectors.toList()) ;
         } catch (Exception e){
             throw new BadRequestExeption("Something went wrong");
         }
 
     }
+
+    @Override
+    public List<MedicalFileDTO> getAlltMedicalFiles()  {
+
+        try {
+            // List<MedicalFile> med_Files = ;
+            return medicalFileRep.findAll().stream().map(this::toMedicalDTO).collect(Collectors.toList()) ;
+        } catch (Exception e){
+            throw new BadRequestExeption("Something went wrong");
+        }
+
+    }
+
+
+
+    @Override
+    public void deleteMedicalPaper(Long id)  {
+
+        try {
+           medicalFileRep.deleteById(id);
+        } catch (Exception e){
+            throw new BadRequestExeption("Something went wrong");
+        }
+
+    }
+
+
+
     
 
-    // @Override 
-    // public void updateMedicalFile(Long id , MedicalFileDTO NewMFDTO){
+    @Override 
+    public void updateMedicalFile(Long id , MedicalFileDTO NewMFDTO){
 
-    // }
+        try {
+            if (id == null || NewMFDTO == null) {
+                throw new BadRequestExeption("Missing data !") ;
+            }
 
-    // @Override 
-    // public MedicalFileDTO getOneMedicalFileById(Long id){
+            MedicalFile newMF = toMedicalEntity(NewMFDTO) ;
+        
+            MedicalFile exMF = medicalFileRep.findById(id).orElseThrow(()-> new BadRequestExeption("") ) ;
 
-    // }
+            //update exEntity
+            
+                exMF.setPaper(newMF.getPaper());
+                exMF.setPaperType(newMF.getPaperType());
+                // exMF.setStudent(newMF.getStudent());
+                medicalFileRep.save(exMF) ;
+
+
+            
+        } catch (Exception e) {
+            // TODO: handle exception
+            throw new BadRequestExeption("Request Failed !") ;
+
+        }
+
+    }
+
+    @Override 
+    public MedicalFileDTO getOneMedicalFileById(Long id){
+
+        try {
+            MedicalFile mf = medicalFileRep.findById(id).orElseThrow(()-> new BadRequestExeption("Bad request or invalid id")) ;
+            return toMedicalDTO(mf) ;
+        } catch (Exception e){
+            throw new BadRequestExeption("Something went wrong");
+        }
+
+    }
 
 
 
@@ -93,3 +152,16 @@ public class MedicalFileServiceImplementation implements MedicalFileService{
 
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
